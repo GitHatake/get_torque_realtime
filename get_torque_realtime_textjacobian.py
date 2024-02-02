@@ -8,15 +8,15 @@ from numpy import *
 
 # グローバル変数（トルクデータと角度データを格納する行列および変数）
 torque_matrix = zeros((1, 7))
-angle1, angle2, angle3, angle4, angle5, angle6, angle7 = 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0
-ang1, ang2, ang3, ang4, ang5, ang6, ang7 = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+#angle1, angle2, angle3, angle4, angle5, angle6, angle7 = 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0
+ang1, ang2, ang3, ang4, ang5, ang6, ang7 = 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0
 
 def callback(data):
-    global torque_matrix, angle1, angle2, angle3, angle4, angle5, angle6, angle7, ang1, ang2, ang3, ang4, ang5, ang6, ang7
+    global torque_matrix, ang1, ang2, ang3, ang4, ang5, ang6, ang7
     # 最初の7つのトルクデータを行列に格納
     torque_matrix = matrix([data.effort[:7]])
     # 各関節の角度データを変数に代入
-    angle1, angle2, angle3, angle4, angle5, angle6, angle7 = data.position[:7]
+    ang1, ang2, ang3, ang4, ang5, ang6, ang7 = data.position[:7]
 
 def main():
     rospy.init_node("joint_states_listener", anonymous=True)
@@ -27,6 +27,7 @@ def main():
 
     # ヤコビアンの計算を行う
     while not rospy.is_shutdown():
+        """
         ang1 = radians(angle1)
         ang2 = radians(angle2)
         ang3 = radians(angle3)
@@ -34,6 +35,7 @@ def main():
         ang5 = radians(angle5)
         ang6 = radians(angle6)
         ang7 = radians(angle7)
+        """
 
         jac = matrix([[(320*((-sin(ang1)*cos(ang2)*cos(ang3) - sin(ang3)*cos(ang1))*cos(ang4) + sin(ang1)*sin(ang2)*sin(ang4))*cos(ang5) + 320*(sin(ang1)*sin(ang3)*cos(ang2) - cos(ang1)*cos(ang3))*sin(ang5))*sin(ang6) + (320*(-sin(ang1)*cos(ang2)*cos(ang3) - sin(ang3)*cos(ang1))*sin(ang4) - 320*sin(ang1)*sin(ang2)*cos(ang4))*cos(ang6) + (-300*sin(ang1)*cos(ang2)*cos(ang3) - 300*sin(ang3)*cos(ang1))*sin(ang4) - 300*sin(ang1)*sin(ang2)*cos(ang4) - 300*sin(ang1)*sin(ang2),
                         (320*(-sin(ang2)*cos(ang1)*cos(ang3)*cos(ang4) - sin(ang4)*cos(ang1)*cos(ang2))*cos(ang5) + 320*sin(ang2)*sin(ang3)*sin(ang5)*cos(ang1))*sin(ang6) + (-320*sin(ang2)*sin(ang4)*cos(ang1)*cos(ang3) + 320*cos(ang1)*cos(ang2)*cos(ang4))*cos(ang6) - 300*sin(ang2)*sin(ang4)*cos(ang1)*cos(ang3) + 300*cos(ang1)*cos(ang2)*cos(ang4) + 300*cos(ang1)*cos(ang2),
